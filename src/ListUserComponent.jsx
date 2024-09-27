@@ -8,7 +8,6 @@ const people = [
     // More people...
   ]
 
-  
   export default function ListUserComponent({ people }) {
     return (
       <div className="bg-white py-24 sm:py-32">
@@ -40,5 +39,3 @@ const people = [
       </div>
     );
   }
-  
-  

@@ -1,40 +1,22 @@
-
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
+import { initialState, formReducer } from './Addtask'; // 
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Field, Label, Switch } from '@headlessui/react';
 import ListUserComponent from './ListUserComponent';
 
 export default function FormComponent() {
-  const [agreed, setAgreed] = useState(false);
-  const [people, setPeople] = useState([]); // State for people
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    company: '',
-    email: '',
-    phoneNumber: '',
-    message: '',
-  });
+  const [state, dispatch] = useReducer(formReducer, initialState); 
+  const [agreed, setAgreed] = useState(false); // 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    dispatch({ type: 'SET_FORM_DATA', payload: { name, value } }); // 
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newPerson = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      company: formData.company || 'N/A', // Company หรือค่า N/A ถ้าไม่มี
-      email: formData.email,
-      phoneNumber: formData.phoneNumber,
-      imageUrl: 'https://via.placeholder.com/256', // Placeholder image
-    };
-    setPeople((prev) => [...prev, newPerson]);
-    setFormData({ firstName: '', lastName: '', company: '', email: '', phoneNumber: '', message: '' }); // Reset form
+    dispatch({ type: 'ADD_PERSON' }); // 
   };
-  
 
   return (
     <>
@@ -58,7 +40,7 @@ export default function FormComponent() {
                       id={field}
                       name={field}
                       rows={4}
-                      value={formData[field]}
+                      value={state.formData[field]}
                       onChange={handleChange}
                       className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
@@ -67,7 +49,7 @@ export default function FormComponent() {
                       id={field}
                       name={field}
                       type={field === 'email' ? 'email' : 'text'}
-                      value={formData[field]}
+                      value={state.formData[field]}
                       onChange={handleChange}
                       className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
@@ -109,7 +91,7 @@ export default function FormComponent() {
         </form>
       </div>
       <div className='px-20'>
-      <ListUserComponent people={people} /> {/* Pass people as prop */}
+        <ListUserComponent people={state.people} /> {/* ส่งค่า people */}
       </div>
     </>
   );
